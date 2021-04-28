@@ -87,22 +87,6 @@ def write_values():
     return np.array(a).transpose()
 
 
-def newline(p1, p2, color='black'):
-    ax = plt.gca()
-    xmin, xmax = ax.get_xbound()
-
-    if p2[0] == p1[0]:
-        xmin = xmax = p1[0]
-        ymin, ymax = ax.get_ybound()
-    else:
-        ymax = p1[1] + (p2[1] - p1[1]) / (p2[0] - p1[0]) * (xmax - p1[0])
-        ymin = p1[1] + (p2[1] - p1[1]) / (p2[0] - p1[0]) * (xmin - p1[0])
-
-    l = mlines.Line2D([xmin, xmax], [ymin, ymax], color=color)
-    ax.add_line(l)
-    return l
-
-
 def check_and_draw(x, y, approximate_function, title, point):
     fig, ax = plt.subplots()
     xnew = np.linspace(np.min(x), np.max(x), 100)
