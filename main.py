@@ -1,3 +1,4 @@
+import math
 import warnings
 import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
@@ -76,6 +77,47 @@ def parse():
         cprint('Please, try again!\n', 'yellow', attrs=['bold'])
 
 
+def equation():
+    while 1:
+        cprint("\nChoose equation:\n"
+               "\t1. sin(x)\n"
+               "\t2. sqrt(x)\n"
+               "\t3. x^3 + x^2 + 3\n"
+               "\t4. e^x\n", 'green', attrs=['bold'])
+        cprint('Your equation: ', 'green', attrs=['bold'])
+        method = int(input().strip())
+        cprint("\nChoose the borders (-10 10)\n", 'green', attrs=['bold'])
+        cprint('Borders: ', 'green', attrs=['bold'])
+        borders = list(input().strip().split(" "))
+
+        if len(borders) == 2 and (float(borders[0].strip()) < float(borders[1].strip())):
+            a = float(borders[0].strip())
+            b = float(borders[1].strip())
+            data = []
+            cprint("\nWrite the number of interpolation nodes (from 0 to 30)\n", 'green', attrs=['bold'])
+            cprint('Number: ', 'green', attrs=['bold'])
+            number_of_data = write_number('', integer=True, check=[False, 0, 30])
+            x = np.linspace(a, b, number_of_data)
+            if method == 1:
+                for i in range(number_of_data):
+                    data.append([x[i], math.sin(x[i])])
+            elif method == 2:
+                for i in range(number_of_data):
+                    data.append([x[i], math.sqrt(x[i])])
+            elif method == 3:
+                for i in range(number_of_data):
+                    data.append([x[i], math.pow(x[i], 3) + math.pow(x[i], 2) + 3])
+            elif method == 4:
+                for i in range(number_of_data):
+                    data.append([x[i], math.pow(math.e, x[i])])
+            break
+        else:
+            cprint('Нижняя граница должна быть меньше верхней!',
+                   'red')
+            continue
+    return np.array(data).transpose()
+
+
 def write_values():
     print()
     n = write_number(s='Write the number of values: ', integer=True)
@@ -149,16 +191,27 @@ def main_func():
     cprint('! WELCOME TO THE INTERPOLATION CALCULATOR !\n', 'green', attrs=['bold'])
     while again:
         again = False
+        cprint('Please, choose...\n\td - if u want to put data\n\te - if u want use equation\n', 'green',
+               attrs=['bold'])
+        chosen = input()
+        if chosen.strip() == 'd':
+            cprint('Please, write...\n\tk - if u want to put data from keyboard\n\tf - if u want from file\n', 'green',
+                   attrs=['bold'])
+            in_type = input()
+            if in_type.strip() == 'k':
+                data = write_values()
+            elif in_type.strip() == 'f':
+                data = parse()
+            else:
+                print('Oh, your data is broken ;(\n Please, try again!')
+                again = True
+        elif chosen.strip() == 'e':
+            data = equation()
+        else:
+            print('Oh, your input is broken ;(\n Please, try again!')
+            again = True
         cprint('Please, write...\n\tk - if u want to put data from keyboard\n\tf - if u want from file\n', 'green',
                attrs=['bold'])
-        in_type = input()
-        if in_type.strip() == 'k':
-            data = write_values()
-        elif in_type.strip() == 'f':
-            data = parse()
-        else:
-            print('Oh, your data is broken ;(\n Please, try again!')
-            again = True
     cprint('\nData:', 'cyan', attrs=['bold'])
     print_matrix(data)
 
